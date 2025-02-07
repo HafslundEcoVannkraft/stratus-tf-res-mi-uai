@@ -18,30 +18,31 @@ variable "uai_reponame" {
   description = "Name of the repository for the federated identity"
 }
 
-variable "uai_identity_type" {
-  description = "The type of federated identity (environment, pr, merge)"
-  type        = string
-  default     = "environment"
-}
-
-variable "uai_environment" {
-  type        = string
-  description = "Environment for the federated identity if identity type is environment"
-}
-
-variable "uai_audience" {
-  type        = string
-  description = "Audience for the federated identity"
-  default     = "api://AzureADTokenExchange"
-}
-
-variable "uai_issuer" {
-  type        = string
-  description = "Issuer for the federated identity"
-  default     = "https://token.actions.githubusercontent.com"
-}
-
 variable "uai_ghorg" {
   type        = string
   description = "GitHub organization for the federated identity"
+}
+
+variable "federated_credentials" {
+  type            = map(object({
+    name          = string
+    repository    = string
+    organization  = string
+    entity        = optional(string, "branch")
+    value         = optional(string, "main")
+    audience      = optional(list(string), ["api://AzureADTokenExchange"] )
+    issuer        = optional(string, "https://token.actions.githubusercontent.com" )
+  }))
+  description = <<EOT
+Configuration for federated identity credentials for use with GitHub Actions.
+
+A map of objects with the following attributes:
+- `name`(required): Name of the federated identity.
+- `repository`(required): Name of the GitHub repository.
+- `organization` (required): GitHub organization for the federated identity.
+- `entity`: 'environment', 'pull_request', 'tag', or 'branch'(default: branch).
+- `value`: Value of the entity (default: main).
+- `audience`: Audience for the federated identity (default: [api://AzureADTokenExchange]).
+- `issuer`: Issuer for the federated identity (default: https://token.actions.githubusercontent.com).
+EOT
 }
