@@ -13,16 +13,6 @@ variable "uai_name" {
   description = "Name of the managed identity"
 }
 
-variable "uai_reponame" {
-  type        = string
-  description = "Name of the repository for the federated identity"
-}
-
-variable "uai_ghorg" {
-  type        = string
-  description = "GitHub organization for the federated identity"
-}
-
 variable "federated_credentials" {
   type            = map(object({
     name          = string
