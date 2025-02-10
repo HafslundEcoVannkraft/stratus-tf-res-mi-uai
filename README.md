@@ -11,48 +11,73 @@ This module creates a Managed Identity with federated credentials against GitHub
 ### UAI-Specific
 
 - `uai_name`: Name for the Managed Identity.
-- `uai_reponame`: Name of the GitHub Repository.
-- `uai_identity_type`: Type of federated identity (environment, pr, merge).
-- `uai_environment`: Environment for the federated identity if identity type is environment.
-- `uai_ghorg` : Name of github organization
+- `federated_credentials`: Configuration for federated identity credentials for use with GitHub Actions.
 
-### Optional
-- `uai_audience`: Default: "api://AzureADTokenExchange"
-- `uai_issuer`: Default: "https://token.actions.githubusercontent.com"
-
+  A map of objects with the following attributes:
+  - `name`(required): Name of the federated identity.
+  - `repository`(required): Name of the GitHub repository.
+  - `organization` (required): GitHub organization for the federated identity.
+  - `entity`: 'environment', 'pr', 'tag', or 'branch'(default: branch).
+  - `value`: Value of the entity (default: main).
+  - `audience`: Audience for the federated identity (default: [api://AzureADTokenExchange]).
+  - `issuer`: Issuer for the federated identity (default: https://token.actions.githubusercontent.com).
 ## Outputs
 
 - `uai_id`: The ID of the User Assigned Identity.
 
-## Usage
+## Examples
 
-To use this module, include it in your Terraform configuration as follows:
-
+### Example with Federated credential for a github environment
 ```hcl
 module "user_assigned_identity" {
-  source              = "path/to/your/module"
-  rg_name             = "example-rg"
-  location            = "East US"
-  uai_name            = "example-uai"
-  uai_reponame        = "example-repo"
-  uai_identity_type   = "environment"
-  uai_environment     = "dev"
-  uai_ghorg           = "example-org"
+  source                = "github.com/HafslundEcoVannkraft/stratus-tf-res-mi-uai"
+  rg_name               = "example-rg"
+  location              = "norwayeast"
+  uai_name              = "example-uai"
+  federated_credentials = {
+    "env-dev" = {
+      name          = "example_repo_env_dev"
+      repository    = "example_repo"
+      organization  = "ExampleOrg"
+      entity        = "environment"
+      value         = "dev"
+    }
+  }
 }
 ```
 
-## Examples
-
-### Example with Pull Request Identity
+### Example with Federated credential for main branch and pull requests
 
 ```hcl
 module "user_assigned_identity" {
-  source              = "path/to/your/module"
-  rg_name             = "example-rg"
-  location            = "East US"
-  uai_name            = "example-uai"
-  uai_reponame        = "example-repo"
-  uai_identity_type   = "pr"
-  uai_ghorg           = "example-org"
+  source                = "github.com/HafslundEcoVannkraft/stratus-tf-res-mi-uai"
+  rg_name               = "example-rg"
+  location              = "norwayeast"
+  uai_name              = "example-uai"
+  federated_credentials = {
+    "branch-main" = {
+      name          = "example-repo-branch-main"
+      repository    = "example-repo"
+      organization  = "ExampleOrg"
+      entity        = "branch"
+      value         = "main"
+    }
+    "pr" = {
+      name          = "example-repo-pr"
+      repository    = "example-repo"
+      organization  = "ExampleOrg"
+      entity        = "pr"
+    }
+  }
+}
+```
+
+### Example with no Federated credential
+```hcl
+module "user_assigned_identity" {
+  source                = "github.com/HafslundEcoVannkraft/stratus-tf-res-mi-uai"
+  rg_name               = "example-rg"
+  location              = "norwayeast"
+  uai_name              = "example-uai"
 }
 ```

@@ -6,16 +6,19 @@ resource "azurerm_user_assigned_identity" "uai" {
 
 }
 
+
 # Federated Identity Credential
 resource "azurerm_federated_identity_credential" "uai_fed" {
-  name                = "${var.uai_name}-fed"
+  for_each            = var.federated_credentials
+  name                = each.value.name
   resource_group_name = var.rg_name
-  audience            = ["api://AzureADTokenExchange"]
-  issuer              = "https://token.actions.githubusercontent.com"
+  audience            = each.value.audience
+  issuer              = each.value.issuer
   parent_id           = azurerm_user_assigned_identity.uai.id
   subject = (
-    var.uai_identity_type == "merge" ? "repo:${var.uai_ghorg}/${var.uai_reponame}:merge" :
-    var.uai_identity_type == "pr" ? "repo:${var.uai_ghorg}/${var.uai_reponame}:pr" :
-    "repo:${var.uai_ghorg}/${var.uai_reponame}:environment:${var.uai_environment}"
+    each.value.entity == "environment" ? "repo:${each.value.organization}/${each.value.repository}:environment:${each.value.value}" :
+    each.value.entity == "pr" ? "repo:${each.value.organization}/${each.value.repository}:pull_request" :
+    each.value.entity == "tag" ? "repo:${each.value.organization}/${each.value.repository}:ref:refs/tags/${each.value.value}" :
+    "repo:${each.value.organization}/${each.value.repository}:ref:refs/heads/${each.value.value}"
   )
 }
