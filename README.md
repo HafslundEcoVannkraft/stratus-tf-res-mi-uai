@@ -27,6 +27,25 @@ This module creates a Managed Identity with federated credentials against GitHub
 
 ## Examples
 
+### Example with Federated credential for a github environment
+```hcl
+module "user_assigned_identity" {
+  source                = "github.com/HafslundEcoVannkraft/stratus-tf-res-mi-uai"
+  rg_name               = "example-rg"
+  location              = "norwayeast"
+  uai_name              = "example-uai"
+  federated_credentials = {
+    "env-dev" = {
+      name          = "example_repo_env_dev"
+      repository    = "example_repo"
+      organization  = "ExampleOrg"
+      entity        = "environment"
+      value         = "dev"
+    }
+  }
+}
+```
+
 ### Example with Federated credential for main branch and pull requests
 
 ```hcl
@@ -53,21 +72,12 @@ module "user_assigned_identity" {
 }
 ```
 
-### Example with Federated credential for a github environment
+### Example with no Federated credential
 ```hcl
 module "user_assigned_identity" {
   source                = "github.com/HafslundEcoVannkraft/stratus-tf-res-mi-uai"
   rg_name               = "example-rg"
   location              = "norwayeast"
   uai_name              = "example-uai"
-  federated_credentials = {
-    "env-dev" = {
-      name          = "example_repo_env_dev"
-      repository    = "example_repo"
-      organization  = "ExampleOrg"
-      entity        = "environment"
-      value         = "dev"
-    }
-  }
 }
 ```

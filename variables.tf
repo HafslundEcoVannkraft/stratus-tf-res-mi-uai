@@ -23,6 +23,7 @@ variable "federated_credentials" {
     audience     = optional(list(string), ["api://AzureADTokenExchange"])
     issuer       = optional(string, "https://token.actions.githubusercontent.com")
   }))
+  default     = {}
   description = <<EOT
 Configuration for federated identity credentials for use with GitHub Actions.
 
