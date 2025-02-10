@@ -14,14 +14,14 @@ variable "uai_name" {
 }
 
 variable "federated_credentials" {
-  type            = map(object({
-    name          = string
-    repository    = string
-    organization  = string
-    entity        = optional(string, "branch")
-    value         = optional(string, "main")
-    audience      = optional(list(string), ["api://AzureADTokenExchange"] )
-    issuer        = optional(string, "https://token.actions.githubusercontent.com" )
+  type = map(object({
+    name         = string
+    repository   = string
+    organization = string
+    entity       = optional(string, "branch")
+    value        = optional(string, "main")
+    audience     = optional(list(string), ["api://AzureADTokenExchange"])
+    issuer       = optional(string, "https://token.actions.githubusercontent.com")
   }))
   description = <<EOT
 Configuration for federated identity credentials for use with GitHub Actions.
