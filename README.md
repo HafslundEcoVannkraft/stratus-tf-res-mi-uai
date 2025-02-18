@@ -23,7 +23,8 @@ This module creates a Managed Identity with federated credentials against GitHub
   - `issuer`: Issuer for the federated identity (default: https://token.actions.githubusercontent.com).
 ## Outputs
 
-- `uai_id`: The ID of the User Assigned Identity.
+- `id`: The ID of the User Assigned Identity.
+- `client_id`: The Client ID of the User Assigned Identity.
 
 ## Examples
 
